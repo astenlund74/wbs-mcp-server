@@ -134,7 +134,7 @@ def format_work_item_detail(item: WorkItem) -> str:
     return "\n".join(lines)
 
 
-@app.list_tools()
+@app.list_tools()  # type: ignore[no-untyped-call, untyped-decorator]
 async def list_tools() -> list[Tool]:
     """List available tools."""
     return [
@@ -318,7 +318,7 @@ async def list_tools() -> list[Tool]:
     ]
 
 
-@app.call_tool()
+@app.call_tool()  # type: ignore[untyped-decorator]
 async def call_tool(name: str, arguments: Any) -> list[TextContent]:
     """Handle tool calls."""
     try:
@@ -412,10 +412,12 @@ async def handle_get_work_item(loader: WorkItemsLoader, args: dict[str, Any]) ->
         item = loader.get_by_wbs_id(wbs_id)
         if not item:
             return [TextContent(type="text", text=f"Work item not found: {wbs_id}")]
-    else:
-        item = loader.get_by_issue_number(issue_number)
+    elif issue_number is not None:
+        item = loader.get_by_issue_number(int(issue_number))
         if not item:
             return [TextContent(type="text", text=f"Work item not found: #{issue_number}")]
+    else:
+        return [TextContent(type="text", text="Must provide either wbs_id or issue_number")]
     
     # Format detailed view
     return [TextContent(type="text", text=format_work_item_detail(item))]
@@ -522,14 +524,14 @@ async def handle_resolve_review_thread(args: dict[str, Any]) -> list[TextContent
     return [TextContent(type="text", text=output)]
 
 
-async def async_main():
+async def async_main() -> None:
     """Run the MCP server (async)."""
     logger.info("Starting WBS MCP Server")
     async with stdio_server() as (read_stream, write_stream):
         await app.run(read_stream, write_stream, app.create_initialization_options())
 
 
-def main():
+def main() -> None:
     """Entry point for the MCP server (sync wrapper)."""
     import asyncio
     asyncio.run(async_main())

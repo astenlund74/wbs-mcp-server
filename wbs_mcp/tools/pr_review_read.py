@@ -7,6 +7,9 @@ from typing import Any, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
+# Maximum comment length to display before truncating
+MAX_COMMENT_DISPLAY_LENGTH = 500
+
 
 def list_pr_review_threads(pr_number: Optional[int] = None) -> Dict[str, Any]:
     """
@@ -123,7 +126,8 @@ def _get_current_pr_number() -> Optional[int]:
         )
         if result.returncode == 0:
             data = json.loads(result.stdout)
-            return data.get("number")
+            number = data.get("number")
+            return int(number) if number is not None else None
     except Exception as e:
         logger.error(f"Failed to get PR number: {e}")
     return None

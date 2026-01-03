@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class GitHubProjectSync:
     """Sync work items with GitHub Projects using GraphQL API."""
     
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize GitHub sync client."""
         self.token = self._get_token()
         self.org = os.environ.get("GITHUB_ORG", "techseed-codex")
@@ -67,7 +67,8 @@ class GitHubProjectSync:
                 text=True,
                 check=True
             )
-            return json.loads(result.stdout)
+            response: Dict[str, Any] = json.loads(result.stdout)
+            return response
         except subprocess.CalledProcessError as e:
             logger.error(f"GraphQL query failed: {e.stderr}")
             raise RuntimeError(f"GitHub API error: {e.stderr}") from e
@@ -171,8 +172,9 @@ class GitHubProjectSync:
         items = result["data"]["organization"]["projectV2"]["items"]["nodes"]
         
         for item in items:
-            if item["content"].get("number") == issue_number:
-                return item["id"]
+            content = item.get("content", {})
+            if isinstance(content, dict) and content.get("number") == issue_number:
+                return str(item["id"])
         
         return None
     
@@ -203,11 +205,13 @@ class GitHubProjectSync:
         field_id = field_config["field_id"]
         
         # Get option ID for value
-        option_id = field_config["options"].get(value)
+        options = field_config["options"]
+        assert isinstance(options, dict), "Options must be a dict"
+        option_id = options.get(value)
         if not option_id:
             raise ValueError(
                 f"Invalid {field_name} value '{value}'. "
-                f"Valid options: {', '.join(field_config['options'].keys())}"
+                f"Valid options: {', '.join(options.keys())}"
             )
         
         # Update field via GraphQL mutation
