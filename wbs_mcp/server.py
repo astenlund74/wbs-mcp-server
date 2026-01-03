@@ -522,13 +522,18 @@ async def handle_resolve_review_thread(args: dict[str, Any]) -> list[TextContent
     return [TextContent(type="text", text=output)]
 
 
-async def main():
-    """Run the MCP server."""
+async def async_main():
+    """Run the MCP server (async)."""
     logger.info("Starting WBS MCP Server")
     async with stdio_server() as (read_stream, write_stream):
         await app.run(read_stream, write_stream, app.create_initialization_options())
 
 
-if __name__ == "__main__":
+def main():
+    """Entry point for the MCP server (sync wrapper)."""
     import asyncio
-    asyncio.run(main())
+    asyncio.run(async_main())
+
+
+if __name__ == "__main__":
+    main()
