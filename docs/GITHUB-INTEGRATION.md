@@ -7,22 +7,26 @@ As of v0.2.0, the WBS MCP Server uses **direct GitHub API integration** instead 
 ## Architecture Change
 
 ### Before (v0.1.x)
+
 ```
 MCP Tool → Shell Script (sync-github-project.sh) → gh CLI → GitHub GraphQL API
 ```
 
 **Problems:**
+
 - Required `SYNC_SCRIPT_PATH` environment variable
 - Script must exist in target repository
 - Hard to test and debug
 - Subprocess overhead
 
 ### After (v0.2.0)
+
 ```
 MCP Tool → GitHubProjectSync (Python) → gh CLI → GitHub GraphQL API
 ```
 
 **Benefits:**
+
 - ✅ No external scripts required
 - ✅ Self-contained Python implementation
 - ✅ Easier testing (mock GitHubProjectSync)
@@ -37,7 +41,7 @@ MCP Tool → GitHubProjectSync (Python) → gh CLI → GitHub GraphQL API
 {
   "env": {
     // Work items file path (required)
-    "WBS_WORK_ITEMS_PATH": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+    "WBS_WORK_ITEMS_PATH": "${workspaceFolder}/backlog/work-items.yaml",
     
     // GitHub org/project (required for sync)
     "GITHUB_ORG": "techseed-codex",
@@ -111,23 +115,27 @@ sync.sync_work_item(
 If you have a repository using the old version:
 
 1. **Update `.vscode/mcp.json`:**
+
    ```diff
    {
      "env": {
-       "WBS_WORK_ITEMS_PATH": "...",
--      "SYNC_SCRIPT_PATH": "${workspaceFolder}/tools/sync-github-project.sh"
-   +   "GITHUB_ORG": "your-org",
-   +   "GITHUB_PROJECT_NUMBER": "2"
+      "WBS_WORK_ITEMS_PATH": "...",
+
+      "SYNC_SCRIPT_PATH": "${workspaceFolder}/tools/sync-github-project.sh"
+      "GITHUB_ORG": "your-org",
+      "GITHUB_PROJECT_NUMBER": "2"
      }
    }
+
    ```
 
-2. **Optional: Remove sync script**
+1. **Optional: Remove sync script**
+
    ```bash
    rm tools/sync-github-project.sh  # No longer needed
    ```
 
-3. **Reload MCP server**
+2. **Reload MCP server**
    - In VS Code: Reload window or restart Copilot
 
 ### Backwards Compatibility
@@ -166,6 +174,7 @@ print(f"Success: {result}")
 ### "No GitHub token found"
 
 **Solution:** Either:
+
 1. Set `GITHUB_TOKEN` environment variable
 2. Run `gh auth login` to authenticate gh CLI
 
@@ -180,6 +189,7 @@ print(f"Success: {result}")
 ### API Rate Limiting
 
 The `gh` CLI automatically handles rate limiting. If you hit limits:
+
 - Caching reduces API calls (project ID, field configs)
 - Consider batching updates instead of updating individual items
 

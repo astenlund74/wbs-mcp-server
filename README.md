@@ -4,11 +4,12 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![MCP](https://img.shields.io/badge/MCP-0.9.0-green.svg)](https://modelcontextprotocol.io)
 
-Model Context Protocol (MCP) server for AI agents to interact with GitHub Projects managed using Work Breakdown Structure (WBS) methodology via `work-items.yaml`.
+Model Context Protocol (MCP) server enabling AI agents to interact with GitHub Projects managed using Work Breakdown Structure (WBS) methodology via `work-items.yaml`.
 
 ## Features
 
-### 📖 Read Operations (Phase 1)
+### Read Operations
+
 - **list_work_items** - Filter by status, type, epic, milestone, parent
 - **get_work_item** - Retrieve single item by WBS ID or issue number
 - **get_hierarchy** - View epic→feature→task tree with progress rollup
@@ -16,58 +17,33 @@ Model Context Protocol (MCP) server for AI agents to interact with GitHub Projec
 - **find_orphans** - Detect items without parent or milestone
 - **get_milestone_coverage** - Track progress by milestone
 
-### ✏️ Write Operations (Phase 2)
+### Write Operations
+
 - **update_work_item** - Modify work item fields with optional GitHub sync
 - **list_pr_review_threads** - Read PR review comments (auto-detects from branch)
 - **reply_to_review_thread** - Reply to review feedback
 - **resolve_review_thread** - Mark review threads as resolved
 
-## Why This Tool?
-
-Managing architecture backlogs requires structured work breakdown, progress tracking, and AI agent integration. This server bridges GitHub Projects with AI assistants (Claude Desktop, VS Code Copilot) using the Model Context Protocol.
-
-**Use Cases**:
-- Architecture teams tracking epics, features, tasks
-- Project managers monitoring milestone progress
-- AI agents autonomously replying to PR reviews
-- Automated work item updates with audit trails
-
-## Installation
-
-### Prerequisites
-- Python 3.11 or higher
-- [uv](https://github.com/astral-sh/uv) package manager (recommended) or pip
-- Git repository with `work-items.yaml` in `8-REALIZATION/backlog/`
-
-### Install from GitHub
-
-```bash
-# Using uv (recommended)
-uv pip install git+https://github.com/astenlund74/wbs-mcp-server.git
-
-# Using pip
-pip install git+https://github.com/astenlund74/wbs-mcp-server.git
-```
-
-### Local Development
-
-```bash
-git clone https://github.com/astenlund74/wbs-mcp-server.git
-cd wbs-mcp-server
-uv venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-uv pip install -e ".[dev]"
-pytest tests/  # Run tests
-```
-
 ## Quick Start
 
-### VS Code Copilot Integration
+### Installation
 
-Add to your `.vscode/mcp.json`:
+\`\`\`bash
 
-**Recommended (Pin to stable version):**
-```json
+# Using uv (recommended)
+
+uv pip install git+<https://github.com/astenlund74/wbs-mcp-server.git@v2.0.1>
+
+# Using pip
+
+pip install git+<https://github.com/astenlund74/wbs-mcp-server.git@v2.0.1>
+\`\`\`
+
+### Configuration
+
+**VS Code** - Add to \`.vscode/mcp.json\`:
+
+\`\`\`json
 {
   "mcpServers": {
     "wbs-project": {
@@ -75,21 +51,25 @@ Add to your `.vscode/mcp.json`:
       "args": [
         "run",
         "--with",
-        "git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.0",
+        "git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.1",
         "wbs-mcp"
       ],
       "env": {
-        "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+        "WBS_WORK_ITEMS_PATH": "${workspaceFolder}/backlog/work-items.yaml",
         "GITHUB_ORG": "your-org",
         "GITHUB_PROJECT_NUMBER": "2"
       }
     }
   }
 }
-```
+\`\`\`
 
-**Latest (Main branch - may have breaking changes):**
-```json
+**Claude Desktop** - Add to config file:
+
+- macOS: \`~/Library/Application Support/Claude/claude_desktop_config.json\`
+- Windows: \`%APPDATA%\\Claude\\claude_desktop_config.json\`
+
+\`\`\`json
 {
   "mcpServers": {
     "wbs-project": {
@@ -97,181 +77,93 @@ Add to your `.vscode/mcp.json`:
       "args": [
         "run",
         "--with",
-        "git+https://github.com/astenlund74/wbs-mcp-server.git",
+        "git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.1",
         "wbs-mcp"
       ],
       "env": {
-        "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+        "WBS_WORK_ITEMS_PATH": "/absolute/path/to/work-items.yaml",
         "GITHUB_ORG": "your-org",
         "GITHUB_PROJECT_NUMBER": "2"
       }
     }
   }
 }
-```
+\`\`\`
 
-**Alternative (Local Development)**:
-```json
-{
-  "mcpServers": {
-    "wbs-project": {
-      "command": "uv",
-      "args": ["--directory", "/path/to/wbs-mcp-server", "run", "wbs-mcp"],
-      "env": {
-        "WBS_WORK_ITEMS_PATH": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
-        "GITHUB_ORG": "your-org",
-        "GITHUB_PROJECT_NUMBER": "2"
-      }
-    }
-  }
-}
-```
-
-### Claude Desktop Integration
-
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS):
-
-**Recommended (Pin to stable version):**
-```json
-{
-  "mcpServers": {
-    "wbs-project": {
-      "command": "uv",
-      "args": [
-        "run",
-        "--with",
-        "git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.0",
-        "wbs-mcp"
-      ],
-      "env": {
-        "WBS_WORK_ITEMS_PATH": "/path/to/your-repo/8-REALIZATION/backlog/work-items.yaml",
-        "GITHUB_ORG": "your-org",
-        "GITHUB_PROJECT_NUMBER": "2"
-      }
-    }
-  }
-}
-```
-
-**Alternative (Local Development)**:
-```json
-{
-  "mcpServers": {
-    "wbs-project": {
-      "command": "uv",
-      "args": ["--directory", "/path/to/wbs-mcp-server", "run", "wbs-mcp"],
-      "env": {
-        "WORK_ITEMS_FILE": "/path/to/your-repo/8-REALIZATION/backlog/work-items.yaml",
-        "GITHUB_ORG": "your-org",
-        "GITHUB_PROJECT_NUMBER": "2"
-      }
-    }
-  }
-}
-```
-
-**Restart Claude Desktop** after updating configuration.
+Restart your IDE or Claude Desktop after configuration.
 
 ## Usage Examples
 
-### List Active Tasks
-```
-AI Agent: "Show me all tasks in Todo status for Milestone M1.1"
-→ Calls: list_work_items(status="Todo", milestone="M1.1", wbs_type="Task")
-```
+### List Work Items
 
-### View Progress Hierarchy
-```
-AI Agent: "What's the status of Epic WS-11000?"
-→ Calls: get_hierarchy(root_wbs="WS-11000")
-→ Returns: Tree with all features/tasks under epic with progress %
-```
+\`\`\`
+AI: "Show me all tasks in Todo status for Milestone M1.1"
+\`\`\`
 
-### Update Work Item
-```
-AI Agent: "Move WS-17101 to Done and set effort to 8 days"
-→ Calls: update_work_item(wbs_id="WS-17101", updates={status: "Done", effort_days: 8})
-```
+### View Progress
 
-### PR Review Workflow
-```
-AI Agent: "Review and respond to PR feedback"
-→ Calls: list_pr_review_threads() [auto-detects current PR]
-→ Calls: reply_to_review_thread(thread_id, "Fixed in commit abc123")
-→ Calls: resolve_review_thread(thread_id)
-```
+\`\`\`
+AI: "What's the status of Epic WS-11000?"
+\`\`\`
 
-## Project Structure
+### Update Status
 
-```
-wbs-mcp-server/
-├── README.md                    # This file
-├── pyproject.toml              # Python project config (Poetry/uv)
-├── wbs_mcp/                    # Python package
-│   ├── __init__.py
-│   ├── server.py               # MCP server main
-│   ├── models.py               # Pydantic models for WorkItem
-│   ├── tools/                  # Tool implementations
-│   │   ├── __init__.py
-│   │   ├── list_work_items.py
-│   │   ├── get_work_item.py
-│   │   ├── get_hierarchy.py
-│   │   ├── validate_sync.py
-│   │   ├── find_orphans.py
-│   │   └── get_milestone_coverage.py
-│   └── data_loader.py          # YAML loading & caching
-├── tests/                      # Unit tests
-│   ├── test_tools.py
-│   └── test_data_loader.py
-└── docs/
-    ├── SETUP.md                # Installation guide
-    ├── TOOLS.md                # Tool reference
-    └── INTEGRATION.md          # Claude Desktop config
-```
+\`\`\`
+AI: "Move WS-17101 to Done and sync to GitHub"
+\`\`\`
 
-## Development Approach
+### PR Review
 
-**Vertical Slice Delivery**: Implement tools one-by-one with full testing, not all at once.
+\`\`\`
+AI: "List unresolved review comments on my PR"
+AI: "Reply to thread abc123 with 'Fixed in latest commit'"
+\`\`\`
 
-### Sprint Plan
+## Documentation
 
-- **Day 1**: Server scaffold + `list_work_items` (working end-to-end)
-- **Day 2**: `get_work_item` + `get_hierarchy` 
-- **Day 3**: `validate_sync` + `find_orphans`
-- **Day 4**: `get_milestone_coverage` + polish
-- **Day 5**: Documentation + Claude Desktop integration guide
+- **[QUICKSTART.md](QUICKSTART.md)** - 5-minute setup guide
+- **[docs/SETUP.md](docs/SETUP.md)** - Detailed installation and configuration
+- **[docs/TOOLS.md](docs/TOOLS.md)** - Complete tool reference with examples
+- **[docs/GITHUB-INTEGRATION.md](docs/GITHUB-INTEGRATION.md)** - GitHub Projects sync configuration
+- **[docs/RELEASE-PROCESS.md](docs/RELEASE-PROCESS.md)** - CI/CD and versioning
+- **[CHANGELOG.md](CHANGELOG.md)** - Version history
 
-## Success Criteria
+## Requirements
 
-- [x] All 6 tools implemented and tested
-- [x] Response time < 500ms per query
-- [x] Zero writes to work-items.yaml (read-only guarantee)
-- [ ] Works with Claude Desktop (config provided)
-- [x] Clear documentation for setup and usage
+- Python 3.11+
+- Git repository with \`work-items.yaml\` following WBS structure
+- GitHub CLI (\`gh\`) for write operations
+- GitHub token with \`project\` scope (for sync operations)
 
-## Implementation Status
+## Development
 
-✅ **PHASE 1 COMPLETE** - All 6 read-only tools implemented:
+\`\`\`bash
+git clone <https://github.com/astenlund74/wbs-mcp-server.git>
+cd wbs-mcp-server
+uv venv && source .venv/bin/activate
+uv pip install -e ".[dev]"
+pytest tests/  # All 14 tests should pass
+\`\`\`
 
-1. ✅ `list_work_items` - Filter and list work items
-2. ✅ `get_work_item` - Get detailed item information
-3. ✅ `get_hierarchy` - View epic→feature tree with progress
-4. ✅ `validate_sync` - Check data consistency
-5. ✅ `find_orphans` - Find items missing relationships
-6. ✅ `get_milestone_coverage` - Track milestone progress
+## Architecture
 
-**Tests**: 8/8 passing  
-**Documentation**: Complete (SETUP.md, TOOLS.md)  
-**Ready for**: Claude Desktop integration testing
+The server uses:
 
-## Next Steps
+- **MCP SDK 0.9.0** for protocol implementation
+- **Pydantic** for data validation
+- **ruamel.yaml** for format-preserving YAML updates
+- **GitHub CLI** for GraphQL API access
 
-1. Set up Python project structure with Poetry/uv
-2. Implement MCP server scaffold
-3. Implement first tool (`list_work_items`) with full testing
-4. Test integration with Claude Desktop
-5. Iterate through remaining tools
+## License
 
----
+MIT License - see [LICENSE](LICENSE) file for details.
 
-**Note**: This is a generic WBS MCP server. Can be used with any architecture repository following the Work Breakdown Structure pattern, not specific to RPDS.
+## Contributing
+
+Issues and pull requests welcome at <https://github.com/astenlund74/wbs-mcp-server>
+
+## Support
+
+- **Documentation**: See [docs/](docs/) folder
+- **Issues**: <https://github.com/astenlund74/wbs-mcp-server/issues>
+- **Discussions**: <https://github.com/astenlund74/wbs-mcp-server/discussions>

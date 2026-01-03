@@ -2,176 +2,183 @@
 
 Get the WBS MCP Server running in 5 minutes.
 
-## Installation (2 minutes)
+## Prerequisites
+
+- Python 3.11 or higher
+- [uv](https://github.com/astral-sh/uv) package manager (recommended)
+- Git repository with `work-items.yaml`
+
+## Installation
+
+### Option 1: Direct Install (Recommended)
 
 ```bash
-# From repository root
-cd architecture-work/wbs-mcp-server
+# Using uv
+uv pip install git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.1
 
-# Option A: Using uv (fast!)
-curl -LsSf https://astral.sh/uv/install.sh | sh
-uv venv && uv pip install -e ".[dev]"
-
-# Option B: Using pip
-python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
+# Using pip
+pip install git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.1
 ```
 
-## Verify Installation (30 seconds)
+### Option 2: Local Development
 
 ```bash
-# Run tests
-.venv/bin/pytest tests/ -v
-
-# Should show:
-# ✅ 8 passed
+git clone https://github.com/astenlund74/wbs-mcp-server.git
+cd wbs-mcp-server
+uv venv && source .venv/bin/activate
+uv pip install -e ".[dev]"
+pytest tests/  # Verify installation: should show 14 passed
 ```
 
-## Configure Claude Desktop (2 minutes)
+## Configuration
 
-### Step 1: Find your config file
+### VS Code
 
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-### Step 2: Add MCP server configuration
-
-**Important**: Replace `/ABSOLUTE/PATH/TO/REPO` with your actual path!
-
-```json
-{
-  "mcpServers": {
-    "rpds-project": {
-      "command": "/ABSOLUTE/PATH/TO/REPO/architecture-work/wbs-mcp-server/.venv/bin/python",
-      "args": ["-m", "wbs_mcp.server"]
-    }
-  }
-}
-```
-
-**Example** (macOS):
-```json
-{
-  "mcpServers": {
-    "wbs-project": {
-      "command": "/Users/yourname/repos/architecture-repo/architecture-work/wbs-mcp-server/.venv/bin/python",
-      "args": ["-m", "wbs_mcp.server"]
-    }
-  }
-}
-```
-
-### Step 3: Restart Claude Desktop
-
-Quit Claude Desktop completely (Cmd+Q on Mac) and relaunch.
-
-## Test It Works (1 minute)
-
-In Claude Desktop, try these queries:
-
-### Query 1: List work items
-```
-List all work items in progress
-```
-
-Expected: You should see items with status "In Progress"
-
-### Query 2: Get specific item
-```
-Show me details for WS-17101
-```
-
-Expected: Full description of the MCP server work item
-
-### Query 3: View hierarchy
-```
-Show me the hierarchy under WS-17001
-```
-
-Expected: Tree view of Documentation Toolchain epic with features
-
-## Troubleshooting
-
-### "No tools available" in Claude
-
-1. Check Claude Desktop logs: View → Developer Tools → Console
-2. Look for errors like "Failed to connect to MCP server"
-3. Common fixes:
-   - Verify absolute path is correct (no `~` shorthand)
-   - Verify `.venv/bin/python` exists
-   - Try full path: `which python` inside activated venv
-
-### "Work items file not found"
-
-The server looks for: `../../8-REALIZATION/backlog/work-items.yaml`
-
-This path works when running from `architecture-work/wbs-mcp-server/`.
-
-If your structure is different, set environment variable:
+Create `.vscode/mcp.json` in your project root:
 
 ```json
 {
   "mcpServers": {
     "wbs-project": {
-      "command": "/path/to/.venv/bin/python",
-      "args": ["-m", "wbs_mcp.server"],
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.1",
+        "wbs-mcp"
+      ],
       "env": {
-        "WBS_WORK_ITEMS_PATH": "/absolute/path/to/work-items.yaml"
+        "WBS_WORK_ITEMS_PATH": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+        "GITHUB_ORG": "your-org",
+        "GITHUB_PROJECT_NUMBER": "2"
       }
     }
   }
 }
 ```
 
-### Server crashes on startup
+**Important**: Replace `your-org` and project number with your actual values.
 
-Check Python version:
-```bash
-.venv/bin/python --version
-# Should be 3.11 or higher
+Reload VS Code window: `Cmd+Shift+P` → "Reload Window"
+
+### Claude Desktop
+
+**macOS**: Edit `~/Library/Application Support/Claude/claude_desktop_config.json`  
+**Windows**: Edit `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "wbs-project": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.1",
+        "wbs-mcp"
+      ],
+      "env": {
+        "WBS_WORK_ITEMS_PATH": "/absolute/path/to/work-items.yaml",
+        "GITHUB_ORG": "your-org",
+        "GITHUB_PROJECT_NUMBER": "2"
+      }
+    }
+  }
+}
 ```
 
-If Python is too old:
-```bash
-# Recreate venv with newer Python
-rm -rf .venv
-python3.11 -m venv .venv
-.venv/bin/pip install -e ".[dev]"
+Restart Claude Desktop completely (Quit and relaunch).
+
+## Test It Works
+
+### In VS Code Copilot
+
+Try these queries:
+
+```
+List all work items in progress
 ```
 
-## What Can I Ask?
+```
+Show me details for WS-17101
+```
 
-### Project Status
+```
+What's the status of milestone M1.1?
+```
+
+### In Claude Desktop
+
+```
+List all tasks in Todo status
+```
+
+```
+Show me the hierarchy under epic WS-11000
+```
+
+## Troubleshooting
+
+### "No tools available"
+
+1. Check logs (VS Code: Output panel, Claude: View → Developer Tools)
+2. Verify `WBS_WORK_ITEMS_PATH` points to existing file
+3. Ensure `work-items.yaml` has correct structure
+
+### "Work items file not found"
+
+Update environment variable to absolute path:
+
+```json
+{
+  "env": {
+    "WBS_WORK_ITEMS_PATH": "/Users/yourname/projects/repo/8-REALIZATION/backlog/work-items.yaml"
+  }
+}
+```
+
+### GitHub sync not working
+
+Ensure you have:
+1. GitHub CLI installed: `gh --version`
+2. Authenticated: `gh auth login`
+3. Token has `project` scope
+4. Set `GITHUB_ORG` and `GITHUB_PROJECT_NUMBER` correctly
+
+## Example Queries
+
+**Project Status:**
 - "What milestones are we tracking?"
 - "Show me milestone M1.1 progress"
 - "List all blocked work items"
 
-### Work Item Details
+**Work Item Details:**
 - "Show me WS-17101"
 - "What epics are in the backlog?"
-- "List features under WS-11100"
+- "List features under epic WS-11100"
 
-### Data Quality
+**Data Quality:**
 - "Validate the work items"
 - "Find orphan items"
 - "Check for consistency issues"
 
-### Planning
-- "Show hierarchy for WS-17001"
-- "What work is in progress?"
-- "List all Todo items in WS1 work stream"
+**Updates:**
+- "Move WS-17101 to Done"
+- "Update WS-17102 priority to High and sync to GitHub"
+
+**PR Reviews:**
+- "List unresolved review comments"
+- "Reply to thread abc123"
+- "Resolve all my review threads"
 
 ## Next Steps
 
-- Read [TOOLS.md](docs/TOOLS.md) for complete tool reference
-- See [SETUP.md](docs/SETUP.md) for advanced configuration
-- Try combining tools for analysis workflows
+- Review [docs/TOOLS.md](docs/TOOLS.md) for complete tool reference
+- See [docs/SETUP.md](docs/SETUP.md) for advanced configuration
+- Read [docs/GITHUB-INTEGRATION.md](docs/GITHUB-INTEGRATION.md) for sync setup
 
 ## Getting Help
 
-- Check tool documentation: [docs/TOOLS.md](docs/TOOLS.md)
-- Review test examples: [tests/test_data_loader.py](tests/test_data_loader.py)
-- Contact Sara (Solution Architect) for issues
-
----
-
-**Happy querying! 🚀**
+- **Documentation**: [docs/](docs/) folder
+- **Issues**: https://github.com/astenlund74/wbs-mcp-server/issues
+- **Discussions**: https://github.com/astenlund74/wbs-mcp-server/discussions

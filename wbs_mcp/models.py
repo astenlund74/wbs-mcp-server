@@ -1,4 +1,4 @@
-"""Pydantic models for RPDS work items."""
+"""Pydantic models for work items."""
 
 from datetime import datetime
 from typing import Optional
