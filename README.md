@@ -118,7 +118,7 @@ Add to your `.vscode/mcp.json`:
       "command": "uv",
       "args": ["--directory", "/path/to/wbs-mcp-server", "run", "wbs-mcp"],
       "env": {
-        "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+        "WBS_WORK_ITEMS_PATH": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
         "GITHUB_ORG": "your-org",
         "GITHUB_PROJECT_NUMBER": "2"
       }
@@ -144,7 +144,7 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
         "wbs-mcp"
       ],
       "env": {
-        "WORK_ITEMS_FILE": "/path/to/your-repo/8-REALIZATION/backlog/work-items.yaml",
+        "WBS_WORK_ITEMS_PATH": "/path/to/your-repo/8-REALIZATION/backlog/work-items.yaml",
         "GITHUB_ORG": "your-org",
         "GITHUB_PROJECT_NUMBER": "2"
       }

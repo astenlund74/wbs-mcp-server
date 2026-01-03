@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- **Documentation:** Corrected environment variable name from `WORK_ITEMS_FILE` to `WBS_WORK_ITEMS_PATH` in all documentation and examples (thanks Frank!)
+
 ### Planned
 
 - Phase 3: Work item creation tool

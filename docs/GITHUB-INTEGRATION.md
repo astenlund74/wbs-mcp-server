@@ -37,7 +37,7 @@ MCP Tool → GitHubProjectSync (Python) → gh CLI → GitHub GraphQL API
 {
   "env": {
     // Work items file path (required)
-    "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+    "WBS_WORK_ITEMS_PATH": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
     
     // GitHub org/project (required for sync)
     "GITHUB_ORG": "techseed-codex",
@@ -114,8 +114,8 @@ If you have a repository using the old version:
    ```diff
    {
      "env": {
-       "WORK_ITEMS_FILE": "...",
-   -   "SYNC_SCRIPT_PATH": "${workspaceFolder}/tools/sync-github-project.sh"
+       "WBS_WORK_ITEMS_PATH": "...",
+-      "SYNC_SCRIPT_PATH": "${workspaceFolder}/tools/sync-github-project.sh"
    +   "GITHUB_ORG": "your-org",
    +   "GITHUB_PROJECT_NUMBER": "2"
      }
