@@ -8,14 +8,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Planned
+
 - Phase 3: Work item creation tool
 - Advanced filtering (logical operators, date ranges)
 - Batch operations support
 - Enhanced error recovery
 
+## [2.0.1] - 2026-01-03
+
+### Fixed
+
+- All mypy type errors resolved (18 errors fixed across 5 files)
+- Release workflow now requires tests to pass before creating release
+- Added types-PyYAML stub package for proper YAML typing
+- Proper type annotations for async_main and main functions
+- Type handling in GitHubProjectSync API responses
+- Issue number validation in get_work_item tool
+
+### Changed
+
+- CI/CD: Linting made non-blocking (warnings only)
+- CI/CD: Removed pytest-cov from test run (not in core dependencies)
+
 ## [2.0.0] - 2026-01-03
 
 ### Changed
+
 - **BREAKING: Refactored GitHub integration** - Removed shell script dependency
   - `update_work_item` now uses `GitHubProjectSync` class directly
   - No longer requires `SYNC_SCRIPT_PATH` environment variable
@@ -23,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Self-contained Python implementation for better testing and portability
 
 ### Added
+
 - `github_sync.py` module with `GitHubProjectSync` class
   - Direct GitHub GraphQL API integration via gh CLI
   - Field mapping and validation
@@ -36,10 +55,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Test fixture: `tests/fixtures/test-work-items.yaml` for unit testing
 
 ### Removed
+
 - Dependency on external sync scripts (`sync-github-project.sh`)
 - `SYNC_SCRIPT_PATH` environment variable requirement
 
 ### Fixed
+
 - Eliminated subprocess overhead for GitHub sync operations
 - Improved error handling for GitHub API failures
 - Data loader tests now pass with proper test fixtures
@@ -47,6 +68,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2026-01-03
 
 ### Added
+
 - **Phase 1: Read-Only Tools** (WS-17101)
   - `list_work_items` - Filter work items by status, type, epic, milestone
   - `get_work_item` - Retrieve single item by WBS ID or issue number
@@ -62,6 +84,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `resolve_review_thread` - Mark review threads as resolved
 
 ### Technical
+
 - MCP SDK 0.9.0 integration
 - Format-preserving YAML updates via ruamel.yaml
 - Comprehensive test suite (14 passing tests)
@@ -69,12 +92,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - GitHub CLI integration for PR operations
 
 ### Documentation
+
 - Installation guide for VS Code and Claude Desktop
 - WBS ID format specification (format-agnostic design)
 - Tool usage examples and workflows
 - Architecture decision records
 
 ### Planned
+
 - Phase 3: Work item creation tool
 - Advanced filtering (logical operators, date ranges)
 - Batch operations support
