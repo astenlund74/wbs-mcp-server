@@ -48,7 +48,7 @@ Create `.vscode/mcp.json` in your project root:
         "wbs-mcp"
       ],
       "env": {
-        "WBS_WORK_ITEMS_PATH": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+        "WBS_WORK_ITEMS_PATH": "${workspaceFolder}/backlog/work-items.yaml",
         "GITHUB_ORG": "your-org",
         "GITHUB_PROJECT_NUMBER": "2"
       }
@@ -132,7 +132,7 @@ Update environment variable to absolute path:
 ```json
 {
   "env": {
-    "WBS_WORK_ITEMS_PATH": "/Users/yourname/projects/repo/8-REALIZATION/backlog/work-items.yaml"
+    "WBS_WORK_ITEMS_PATH": "/Users/yourname/projects/repo/backlog/work-items.yaml"
   }
 }
 ```

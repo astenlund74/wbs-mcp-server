@@ -45,25 +45,22 @@ def get_loader() -> WorkItemsLoader:
     """Get or create the work items loader."""
     global loader
     if loader is None:
-        # Strategy 1: Check environment variable (WBS_WORK_ITEMS_PATH) to override the default;
-        # expected value is an absolute path to the work-items.yaml file.
+        # Get path from environment variable (required)
         yaml_path_str = os.environ.get("WBS_WORK_ITEMS_PATH")
         
-        if yaml_path_str:
-            yaml_path = Path(yaml_path_str)
-            logger.info(f"Using YAML path from environment: {yaml_path}")
-        else:
-            # Strategy 2: Auto-detect workspace root
-            server_file = Path(__file__).resolve()
-            workspace_root = find_workspace_root(server_file)
-            
-            if workspace_root:
-                yaml_path = workspace_root / "8-REALIZATION" / "backlog" / "work-items.yaml"
-                logger.info(f"Auto-detected workspace root: {workspace_root}")
-            else:
-                # Strategy 3: Fallback to relative path from server location
-                yaml_path = server_file.parent.parent.parent.parent / "8-REALIZATION" / "backlog" / "work-items.yaml"
-                logger.warning(f"Could not find workspace root, using relative path")
+        if not yaml_path_str:
+            raise ValueError(
+                "WBS_WORK_ITEMS_PATH environment variable is required. "
+                "Set it to the absolute path of your work-items.yaml file."
+            )
+        
+        yaml_path = Path(yaml_path_str)
+        
+        if not yaml_path.exists():
+            raise FileNotFoundError(
+                f"Work items file not found: {yaml_path}. "
+                "Check that WBS_WORK_ITEMS_PATH points to a valid file."
+            )
         
         logger.info(f"Loading work items from: {yaml_path}")
         loader = WorkItemsLoader(yaml_path)

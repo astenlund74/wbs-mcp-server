@@ -72,7 +72,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Phase 1: Read-Only Tools** (WS-17101)
+- **Phase 1: Read-Only Tools**
   - `list_work_items` - Filter work items by status, type, epic, milestone
   - `get_work_item` - Retrieve single item by WBS ID or issue number
   - `get_hierarchy` - View epic→feature→task tree with progress rollup
@@ -80,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `find_orphans` - Detect items without parent or milestone
   - `get_milestone_coverage` - Track progress by milestone
 
-- **Phase 2: Write Operations & PR Review** (WS-17102)
+- **Phase 2: Write Operations & PR Review**
   - `update_work_item` - Modify work item fields with optional GitHub sync
   - `list_pr_review_threads` - Read PR review comments (auto-detects from branch)
   - `reply_to_review_thread` - Reply to review feedback

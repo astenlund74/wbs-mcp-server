@@ -7,16 +7,19 @@ Complete documentation for all 10 MCP tools provided by the WBS MCP Server.
 The WBS MCP Server provides tools organized into three categories:
 
 **Read Operations (6 tools)**:
+
 - Work item queries and filtering
 - Hierarchy visualization
 - Data validation
 - Progress tracking
 
 **Write Operations (2 tools)**:
+
 - Work item updates with GitHub sync
 - PR review thread management
 
 **PR Review Operations (2 tools)**:
+
 - List unresolved review threads
 - Reply to and resolve threads
 
@@ -29,6 +32,7 @@ The WBS MCP Server provides tools organized into three categories:
 Filter and list work items from the backlog.
 
 **Parameters**:
+
 - `status` (string, optional): Filter by status
   - Valid values: `"Todo"`, `"In Progress"`, `"Done"`, `"Blocked"`
 - `wbs_type` (string, optional): Filter by type
@@ -44,6 +48,7 @@ Filter and list work items from the backlog.
 **Returns**: List of matching work items with summary information (title, status, type, milestone, etc.)
 
 **Example Queries**:
+
 ```
 List all work items in progress
 Show me all epics
@@ -53,6 +58,7 @@ Show me blocked items
 ```
 
 **Sample Output**:
+
 ```
 Found 3 work items
 
@@ -75,12 +81,14 @@ Description: Implement tenant CRUD operations with validation
 Get detailed information about a specific work item.
 
 **Parameters**:
+
 - `wbs_id` (string): WBS ID of the work item (e.g., `"WS-11101"`)
 - `issue_number` (integer): GitHub issue number (alternative to wbs_id, e.g., `42`)
 
 **Note**: Must provide either `wbs_id` OR `issue_number`, not both.
 
 **Returns**: Full work item details including:
+
 - Title, description, status, priority
 - Relationships (parent, children)
 - Timeline (start/end dates, effort)
@@ -88,6 +96,7 @@ Get detailed information about a specific work item.
 - Responsible architect/assignees
 
 **Example Queries**:
+
 ```
 Show me WS-11101
 Get details for issue #42
@@ -95,6 +104,7 @@ What is WS-11000 about?
 ```
 
 **Sample Output**:
+
 ```
 # WS-11101: Tenant Administration Feature
 
@@ -133,17 +143,20 @@ Implement tenant CRUD operations with validation and authorization.
 View work item hierarchy (epic → features → tasks) with progress rollup.
 
 **Parameters**:
+
 - `root_wbs` (string, optional): Root WBS ID to start from
   - If omitted, shows all top-level epics
   - Example: `"WS-11000"` (shows that epic and all descendants)
 
 **Returns**: Tree structure showing:
+
 - Parent-child relationships
 - Status of each item
 - Effort totals and rollups
 - Completion percentages
 
 **Example Queries**:
+
 ```
 Show me the full work hierarchy
 What's the structure under epic WS-11000?
@@ -151,6 +164,7 @@ Show me the project tree
 ```
 
 **Sample Output**:
+
 ```
 Work Item Hierarchy
 
@@ -177,16 +191,19 @@ Work Item Hierarchy
 Get progress summary by milestone with item counts, effort totals, and completion percentage.
 
 **Parameters**:
+
 - `milestone_filter` (string, optional): Filter to specific milestone (partial match)
   - Example: `"M1"`, `"M1.1"`, `"Foundation"`
 
 **Returns**: Milestone summary showing:
+
 - Total work items per status
 - Total effort (days) per status
 - Completion percentage
 - List of items in milestone
 
 **Example Queries**:
+
 ```
 What's the status of milestone M1.1?
 Show me all milestones
@@ -194,6 +211,7 @@ How much work is in M1?
 ```
 
 **Sample Output**:
+
 ```
 Milestone Coverage Report
 
@@ -224,6 +242,7 @@ Validate work-items.yaml for consistency issues like missing parents, broken ref
 **Parameters**: None
 
 **Returns**: Validation report showing:
+
 - Missing parent references
 - Broken WBS ID references
 - Invalid status values
@@ -231,6 +250,7 @@ Validate work-items.yaml for consistency issues like missing parents, broken ref
 - Duplicate WBS IDs
 
 **Example Queries**:
+
 ```
 Validate the work items
 Check for consistency issues
@@ -238,6 +258,7 @@ Are there any data problems?
 ```
 
 **Sample Output**:
+
 ```
 Validation Report
 
@@ -255,6 +276,7 @@ No duplicate WBS IDs
 ```
 
 Or if issues found:
+
 ```
 Validation Report
 
@@ -279,11 +301,13 @@ Find orphan work items: features without epics, items without milestones, broken
 **Parameters**: None
 
 **Returns**: List of orphaned items categorized by issue type:
+
 - Items with missing parent references
 - Items without milestones
 - Features/Tasks without parent epics
 
 **Example Queries**:
+
 ```
 Find orphan items
 What work items are orphaned?
@@ -291,6 +315,7 @@ Check for items without parents
 ```
 
 **Sample Output**:
+
 ```
 Orphan Work Items Report
 
@@ -318,6 +343,7 @@ Orphan Work Items Report
 Update a work item in work-items.yaml and optionally sync to GitHub Projects.
 
 **Parameters**:
+
 - `wbs_id` (string, required): WBS ID to update (e.g., `"WS-11101"`)
 - `updates` (object, required): Fields to update
   - `status` (string): New status (`"Todo"`, `"In Progress"`, `"Done"`, `"Blocked"`)
@@ -333,12 +359,14 @@ Update a work item in work-items.yaml and optionally sync to GitHub Projects.
 - `push_to_github` (boolean, optional): Whether to sync to GitHub (default: false)
 
 **Returns**: Update confirmation with:
+
 - Success status
 - Fields updated
 - Whether GitHub sync occurred
 - GitHub issue number (if synced)
 
 **Example Queries**:
+
 ```
 Move WS-11101 to Done
 Update WS-11102 priority to High
@@ -347,6 +375,7 @@ Update assignees for WS-11104
 ```
 
 **Sample Usage (natural language)**:
+
 ```
 Update WS-11101:
 - Set status to Done
@@ -356,6 +385,7 @@ Update WS-11101:
 ```
 
 **Sample Output**:
+
 ```
 ✅ Updated WS-11101
 
@@ -371,6 +401,7 @@ Update WS-11101:
 ```
 
 **Requirements**:
+
 - `WBS_WORK_ITEMS_PATH` must be set
 - For GitHub sync: `GITHUB_ORG` and `GITHUB_PROJECT_NUMBER` must be set
 - For GitHub sync: `gh` CLI must be authenticated with `project` scope
@@ -384,10 +415,12 @@ Update WS-11101:
 List unresolved review threads for a pull request.
 
 **Parameters**:
+
 - `pr_number` (integer, optional): PR number
   - If omitted, auto-detects from current branch
 
 **Returns**: List of unresolved review comment threads:
+
 - Thread ID (for use with reply/resolve tools)
 - Comment body
 - File path and line number
@@ -395,6 +428,7 @@ List unresolved review threads for a pull request.
 - Number of replies
 
 **Example Queries**:
+
 ```
 List unresolved review comments
 Show me review threads for PR #15
@@ -402,6 +436,7 @@ What review feedback needs addressing?
 ```
 
 **Sample Output**:
+
 ```
 Unresolved Review Threads for PR #15
 
@@ -432,6 +467,7 @@ Unresolved Review Threads for PR #15
 ```
 
 **Requirements**:
+
 - Must be in a Git repository
 - `gh` CLI must be authenticated
 - Branch must have an associated PR (or provide `pr_number`)
@@ -443,22 +479,26 @@ Unresolved Review Threads for PR #15
 Add a reply comment to a review thread.
 
 **Parameters**:
+
 - `thread_id` (string, required): Review thread ID (from `list_pr_review_threads`)
   - Example: `"T_abc123"`
 - `body` (string, required): Reply text (supports Markdown)
 
 **Returns**: Confirmation with:
+
 - Success status
 - Thread ID
 - Reply comment ID
 
 **Example Queries**:
+
 ```
 Reply to thread T_abc123 with "Fixed in latest commit"
 Add comment to thread T_def456
 ```
 
 **Sample Usage (natural language)**:
+
 ```
 Reply to thread T_abc123:
 
@@ -466,6 +506,7 @@ Reply to thread T_abc123:
 ```
 
 **Sample Output**:
+
 ```
 ✅ Reply added to thread T_abc123
 
@@ -477,6 +518,7 @@ Reply to thread T_abc123:
 ```
 
 **Requirements**:
+
 - Same as `list_pr_review_threads`
 - Thread ID must exist and be from current PR
 
@@ -487,14 +529,17 @@ Reply to thread T_abc123:
 Mark a review thread as resolved.
 
 **Parameters**:
+
 - `thread_id` (string, required): Review thread ID (from `list_pr_review_threads`)
 
 **Returns**: Confirmation with:
+
 - Success status
 - Thread ID
 - File path and line number
 
 **Example Queries**:
+
 ```
 Resolve thread T_abc123
 Mark thread T_def456 as resolved
@@ -502,6 +547,7 @@ Close review thread T_ghi789
 ```
 
 **Sample Output**:
+
 ```
 ✅ Resolved thread T_abc123
 
@@ -512,10 +558,12 @@ All review comments addressed.
 ```
 
 **Best Practice**: Reply to thread explaining the fix before resolving:
+
 1. `reply_to_review_thread` - Explain what you changed
 2. `resolve_review_thread` - Mark as resolved
 
 **Requirements**:
+
 - Same as `list_pr_review_threads`
 - Thread must not already be resolved
 
@@ -526,9 +574,11 @@ All review comments addressed.
 ### Read-Only Operations (Tools 1-6)
 
 **Required**:
+
 - `WBS_WORK_ITEMS_PATH`: Path to `work-items.yaml`
 
 **Example**:
+
 ```json
 {
   "env": {
@@ -540,14 +590,17 @@ All review comments addressed.
 ### Write Operations (Tools 7)
 
 **Required**:
+
 - `WBS_WORK_ITEMS_PATH`: Path to `work-items.yaml`
 
 **Optional (for GitHub sync)**:
+
 - `GITHUB_ORG`: GitHub organization/username
 - `GITHUB_PROJECT_NUMBER`: GitHub Project number
 - `gh` CLI installed and authenticated with `project` scope
 
 **Example**:
+
 ```json
 {
   "env": {
@@ -561,6 +614,7 @@ All review comments addressed.
 ### PR Review Operations (Tools 8-10)
 
 **Required**:
+
 - Git repository with remote
 - `gh` CLI installed and authenticated
 - Branch with associated PR (or provide PR number)
@@ -620,6 +674,7 @@ What's critical priority?
 All tools return structured error messages if something goes wrong:
 
 **File Not Found**:
+
 ```
 ❌ Error: Work items file not found
 
@@ -628,6 +683,7 @@ Check WBS_WORK_ITEMS_PATH environment variable
 ```
 
 **Invalid WBS ID**:
+
 ```
 ❌ Error: Work item not found
 
@@ -636,6 +692,7 @@ No work item found with this ID
 ```
 
 **GitHub Sync Failure**:
+
 ```
 ❌ Error: GitHub sync failed
 
@@ -645,6 +702,7 @@ Then: gh auth refresh -h github.com -s project
 ```
 
 **Invalid Update**:
+
 ```
 ❌ Error: Invalid status
 
@@ -662,5 +720,5 @@ Valid values: Todo, In Progress, Done, Blocked
 
 ## Support
 
-- **Issues**: https://github.com/astenlund74/wbs-mcp-server/issues
-- **Discussions**: https://github.com/astenlund74/wbs-mcp-server/discussions
+- **Issues**: <https://github.com/astenlund74/wbs-mcp-server/issues>
+- **Discussions**: <https://github.com/astenlund74/wbs-mcp-server/discussions>
