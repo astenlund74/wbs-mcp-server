@@ -9,10 +9,10 @@ from wbs_mcp.data_loader import WorkItemsLoader
 
 @pytest.fixture
 def yaml_path():
-    """Get path to work-items.yaml."""
+    """Get path to test fixture work-items.yaml."""
     # Path relative to test file
-    repo_root = Path(__file__).parent.parent.parent.parent
-    return repo_root / "8-REALIZATION" / "backlog" / "work-items.yaml"
+    test_dir = Path(__file__).parent
+    return test_dir / "fixtures" / "work-items.yaml"
 
 
 @pytest.fixture

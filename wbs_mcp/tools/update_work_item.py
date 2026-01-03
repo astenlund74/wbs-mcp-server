@@ -1,11 +1,10 @@
 """Write operations for work items."""
 
 import logging
-import subprocess
-from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
-from ..data_loader import WorkItemsLoader, find_workspace_root
+from ..data_loader import WorkItemsLoader
+from ..github_sync import GitHubProjectSync
 from ..yaml_writer import WorkItemWriter
 
 logger = logging.getLogger(__name__)
@@ -45,15 +44,24 @@ def update_work_item(
         }
         
         # Optionally push to GitHub
-        if push_to_github:
+        if push_to_github and updated_item.issue_number:
             try:
-                sync_result = _push_to_github(yaml_path, wbs_id)
-                result["github_synced"] = sync_result["success"]
-                if not sync_result["success"]:
-                    result["github_error"] = sync_result.get("error", "Unknown error")
+                sync = GitHubProjectSync()
+                sync_results = sync.sync_work_item(
+                    updated_item.issue_number,
+                    updates
+                )
+                result["github_synced"] = all(sync_results.values())
+                result["github_sync_details"] = sync_results
+                
+                if not result["github_synced"]:
+                    failed = [k for k, v in sync_results.items() if not v]
+                    result["github_error"] = f"Failed to sync fields: {', '.join(failed)}"
             except Exception as e:
                 logger.error(f"GitHub sync failed: {e}")
                 result["github_error"] = str(e)
+        elif push_to_github and not updated_item.issue_number:
+            result["github_error"] = "No GitHub issue linked to work item"
         
         # Reload data loader cache
         loader.load(force_reload=True)
@@ -73,51 +81,6 @@ def update_work_item(
             "error": f"Unexpected error: {str(e)}",
             "wbs_id": wbs_id
         }
-
-
-def _push_to_github(yaml_path: Path, wbs_id: str) -> Dict[str, Any]:
-    """Push work item updates to GitHub Project.
-    
-    Args:
-        yaml_path: Path to work-items.yaml
-        wbs_id: WBS ID to sync
-        
-    Returns:
-        Dictionary with success status
-    """
-    repo_root = find_workspace_root(yaml_path)
-    if not repo_root:
-        return {"success": False, "error": "Could not find repository root (.git)"}
-    
-    sync_script = repo_root / "tools" / "sync-github-project.sh"
-    
-    if not sync_script.exists():
-        return {
-            "success": False,
-            "error": f"Sync script not found: {sync_script}"
-        }
-    
-    try:
-        result = subprocess.run(
-            [str(sync_script), "push", "--wbs-id", wbs_id],
-            cwd=repo_root,
-            capture_output=True,
-            text=True,
-            timeout=30
-        )
-        
-        if result.returncode == 0:
-            return {"success": True, "output": result.stdout}
-        else:
-            return {
-                "success": False,
-                "error": f"Script failed (exit {result.returncode}): {result.stderr}"
-            }
-            
-    except subprocess.TimeoutExpired:
-        return {"success": False, "error": "Sync script timed out after 30s"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
 
 
 def format_update_result(result: Dict[str, Any]) -> str:

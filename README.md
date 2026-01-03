@@ -66,6 +66,29 @@ pytest tests/  # Run tests
 
 Add to your `.vscode/mcp.json`:
 
+**Recommended (Pin to stable version):**
+```json
+{
+  "mcpServers": {
+    "wbs-project": {
+      "command": "uv",
+      "args": [
+        "run",
+        "--with",
+        "git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.0",
+        "wbs-mcp"
+      ],
+      "env": {
+        "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+        "GITHUB_ORG": "your-org",
+        "GITHUB_PROJECT_NUMBER": "2"
+      }
+    }
+  }
+}
+```
+
+**Latest (Main branch - may have breaking changes):**
 ```json
 {
   "mcpServers": {
@@ -79,7 +102,8 @@ Add to your `.vscode/mcp.json`:
       ],
       "env": {
         "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
-        "SYNC_SCRIPT_PATH": "${workspaceFolder}/tools/sync-github-project.sh"
+        "GITHUB_ORG": "your-org",
+        "GITHUB_PROJECT_NUMBER": "2"
       }
     }
   }
@@ -95,7 +119,8 @@ Add to your `.vscode/mcp.json`:
       "args": ["--directory", "/path/to/wbs-mcp-server", "run", "wbs-mcp"],
       "env": {
         "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
-        "SYNC_SCRIPT_PATH": "${workspaceFolder}/tools/sync-github-project.sh"
+        "GITHUB_ORG": "your-org",
+        "GITHUB_PROJECT_NUMBER": "2"
       }
     }
   }
@@ -106,6 +131,7 @@ Add to your `.vscode/mcp.json`:
 
 Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS):
 
+**Recommended (Pin to stable version):**
 ```json
 {
   "mcpServers": {
@@ -114,12 +140,13 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
       "args": [
         "run",
         "--with",
-        "git+https://github.com/astenlund74/wbs-mcp-server.git",
+        "git+https://github.com/astenlund74/wbs-mcp-server.git@v2.0.0",
         "wbs-mcp"
       ],
       "env": {
         "WORK_ITEMS_FILE": "/path/to/your-repo/8-REALIZATION/backlog/work-items.yaml",
-        "SYNC_SCRIPT_PATH": "/path/to/your-repo/tools/sync-github-project.sh"
+        "GITHUB_ORG": "your-org",
+        "GITHUB_PROJECT_NUMBER": "2"
       }
     }
   }
@@ -135,7 +162,8 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
       "args": ["--directory", "/path/to/wbs-mcp-server", "run", "wbs-mcp"],
       "env": {
         "WORK_ITEMS_FILE": "/path/to/your-repo/8-REALIZATION/backlog/work-items.yaml",
-        "SYNC_SCRIPT_PATH": "/path/to/your-repo/tools/sync-github-project.sh"
+        "GITHUB_ORG": "your-org",
+        "GITHUB_PROJECT_NUMBER": "2"
       }
     }
   }

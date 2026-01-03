@@ -1,0 +1,96 @@
+work_items:
+  # Epic
+  - issue_number: 50
+    wbs_id: WS-17001
+    wbs_type: Epic
+    title: "Phase 1: MCP Server Infrastructure"
+    status: In Progress
+    priority: 🔴 Critical
+    effort_days: 20.0
+    work_stream: WS1-Repository
+    milestone: M1.1 Foundation
+    description: |
+      Establish MCP server infrastructure for AI agent integration
+      with GitHub Projects and work-items.yaml management.
+    
+  # Feature 1 - Read-only tools
+  - issue_number: 54
+    wbs_id: WS-17101
+    wbs_type: Feature
+    title: "MCP Server Phase 1: Read-Only Tools"
+    wbs_parent: WS-17001
+    status: Done
+    priority: 🔴 Critical
+    effort_days: 8.0
+    work_stream: WS1-Repository
+    milestone: M1.1 Foundation
+    start_date: "2026-01-02"
+    end_date: "2026-01-03"
+    description: |
+      Implement 6 read-only MCP tools for querying work items.
+      
+  # Feature 2 - Write operations
+  - issue_number: 55
+    wbs_id: WS-17102
+    wbs_type: Feature
+    title: "MCP Server Phase 2: Write Operations"
+    wbs_parent: WS-17001
+    status: In Progress
+    priority: 🟡 Medium
+    effort_days: 5.0
+    work_stream: WS1-Repository
+    milestone: M1.1 Foundation
+    start_date: "2026-01-03"
+    description: |
+      Add write operations and PR review integration.
+      
+  # Task under Feature 1
+  - issue_number: 56
+    wbs_id: WS-17101-01
+    wbs_type: Task
+    title: "Implement list_work_items tool"
+    wbs_parent: WS-17101
+    status: Done
+    priority: 🟡 Medium
+    effort_days: 1.0
+    work_stream: WS1-Repository
+    milestone: M1.1 Foundation
+    description: Filter work items by status, type, milestone
+    
+  # Task under Feature 2
+  - issue_number: 57
+    wbs_id: WS-17102-01
+    wbs_type: Task
+    title: "Implement update_work_item tool"
+    wbs_parent: WS-17102
+    status: In Progress
+    priority: 🔴 Critical
+    effort_days: 2.0
+    work_stream: WS1-Repository
+    milestone: M1.1 Foundation
+    description: Modify work item fields with GitHub sync
+    
+  # Another epic for diversity
+  - issue_number: 60
+    wbs_id: WS-18001
+    wbs_type: Epic
+    title: "Phase 2: Advanced Features"
+    status: Todo
+    priority: 🟢 Low
+    effort_days: 15.0
+    work_stream: WS1-Repository
+    milestone: M1.2 Enhancement
+    description: Future enhancements and optimizations
+    
+  # Blocked item for testing
+  - issue_number: 61
+    wbs_id: WS-18101
+    wbs_type: Feature
+    title: "Batch Operations Support"
+    wbs_parent: WS-18001
+    status: Blocked
+    priority: 🟡 Medium
+    effort_days: 5.0
+    work_stream: WS1-Repository
+    milestone: M1.2 Enhancement
+    description: Update multiple items in single operation

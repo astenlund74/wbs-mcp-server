@@ -1,6 +1,6 @@
 [project]
 name = "wbs-mcp-server"
-version = "1.0.0"
+version = "2.0.0"
 description = "Model Context Protocol server for AI agents to interact with GitHub Projects using Work Breakdown Structure (WBS) methodology"
 readme = "README.md"
 license = { text = "MIT" }
@@ -32,6 +32,7 @@ wbs-mcp = "wbs_mcp.server:main"
 dev = [
     "pytest>=7.4.0",
     "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
     "black>=23.0.0",
     "ruff>=0.1.0",
     "mypy>=1.7.0",

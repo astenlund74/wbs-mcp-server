@@ -1,0 +1,106 @@
+name: Release
+
+on:
+    push:
+        tags:
+            - "v*.*.*"
+
+jobs:
+    create-release:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+
+            - name: Extract version from tag
+              id: version
+              run: echo "version=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+
+            - name: Extract changelog for this version
+              id: changelog
+              run: |
+                  VERSION=${{ steps.version.outputs.version }}
+                  echo "Extracting changelog for version $VERSION"
+
+                  # Extract section between version headers
+                  CHANGELOG=$(awk "/## \[Unreleased\]/,/## \[${VERSION}\]/" CHANGELOG.md | 
+                              awk "/## \[${VERSION}\]/,/## \[/" | 
+                              sed '1d;$d')
+
+                  # If unreleased section exists, use that instead
+                  if grep -q "## \[Unreleased\]" CHANGELOG.md; then
+                    CHANGELOG=$(awk "/## \[Unreleased\]/,/## \[/" CHANGELOG.md | sed '1d;$d')
+                  fi
+
+                  echo "changelog<<EOF" >> $GITHUB_OUTPUT
+                  echo "$CHANGELOG" >> $GITHUB_OUTPUT
+                  echo "EOF" >> $GITHUB_OUTPUT
+
+            - name: Create GitHub Release
+              uses: softprops/action-gh-release@v1
+              with:
+                  name: Release v${{ steps.version.outputs.version }}
+                  body: |
+                      # WBS MCP Server v${{ steps.version.outputs.version }}
+
+                      ${{ steps.changelog.outputs.changelog }}
+
+                      ## Installation
+
+                      ```bash
+                      # Install from this release
+                      uv pip install git+https://github.com/${{ github.repository }}.git@${{ github.ref_name }}
+                      ```
+
+                      ## Configuration
+
+                      Update your `.vscode/mcp.json`:
+
+                      ```json
+                      {
+                        "mcpServers": {
+                          "wbs-project": {
+                            "command": "uv",
+                            "args": [
+                              "run",
+                              "--with",
+                              "git+https://github.com/${{ github.repository }}.git@${{ github.ref_name }}",
+                              "wbs-mcp"
+                            ],
+                            "env": {
+                              "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+                              "GITHUB_ORG": "your-org",
+                              "GITHUB_PROJECT_NUMBER": "2"
+                            }
+                          }
+                        }
+                      }
+                      ```
+
+                      See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/${{ github.ref_name }}/CHANGELOG.md) for full details.
+                  draft: false
+                  prerelease: false
+                  generate_release_notes: true
+
+    # Optional: Publish to PyPI (uncomment when ready)
+    # publish-pypi:
+    #   needs: create-release
+    #   runs-on: ubuntu-latest
+    #   permissions:
+    #     id-token: write
+    #
+    #   steps:
+    #     - uses: actions/checkout@v4
+    #
+    #     - name: Install uv
+    #       uses: astral-sh/setup-uv@v4
+    #
+    #     - name: Build package
+    #       run: uv build
+    #
+    #     - name: Publish to PyPI
+    #       uses: pypa/gh-action-pypi-publish@release/v1
