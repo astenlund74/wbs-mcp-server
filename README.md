@@ -72,11 +72,27 @@ Add to your `.vscode/mcp.json`:
     "wbs-project": {
       "command": "uv",
       "args": [
-        "--directory",
-        "/path/to/wbs-mcp-server",
         "run",
-        "wbs_mcp"
+        "--with",
+        "git+https://github.com/astenlund74/wbs-mcp-server.git",
+        "wbs-mcp"
       ],
+      "env": {
+        "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
+        "SYNC_SCRIPT_PATH": "${workspaceFolder}/tools/sync-github-project.sh"
+      }
+    }
+  }
+}
+```
+
+**Alternative (Local Development)**:
+```json
+{
+  "mcpServers": {
+    "wbs-project": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/wbs-mcp-server", "run", "wbs-mcp"],
       "env": {
         "WORK_ITEMS_FILE": "${workspaceFolder}/8-REALIZATION/backlog/work-items.yaml",
         "SYNC_SCRIPT_PATH": "${workspaceFolder}/tools/sync-github-project.sh"
@@ -96,11 +112,27 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS)
     "wbs-project": {
       "command": "uv",
       "args": [
-        "--directory",
-        "/path/to/wbs-mcp-server",
         "run",
-        "wbs_mcp"
+        "--with",
+        "git+https://github.com/astenlund74/wbs-mcp-server.git",
+        "wbs-mcp"
       ],
+      "env": {
+        "WORK_ITEMS_FILE": "/path/to/your-repo/8-REALIZATION/backlog/work-items.yaml",
+        "SYNC_SCRIPT_PATH": "/path/to/your-repo/tools/sync-github-project.sh"
+      }
+    }
+  }
+}
+```
+
+**Alternative (Local Development)**:
+```json
+{
+  "mcpServers": {
+    "wbs-project": {
+      "command": "uv",
+      "args": ["--directory", "/path/to/wbs-mcp-server", "run", "wbs-mcp"],
       "env": {
         "WORK_ITEMS_FILE": "/path/to/your-repo/8-REALIZATION/backlog/work-items.yaml",
         "SYNC_SCRIPT_PATH": "/path/to/your-repo/tools/sync-github-project.sh"
